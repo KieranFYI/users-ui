@@ -14,17 +14,17 @@
                         />
                     </div>
                     <ul class="list-group list-group-unbordered mb-1">
-                        @foreach($infos as $info)
+                        @foreach($infos as $component)
                             <li class="list-group-item px-2 py-1 @if($loop->first)border-top-0 @endif @if($loop->last)border-bottom-0 @endif">
-                                {!! $info !!}
+                                @include('users-ui::component', ['component' => $component])
                             </li>
                         @endforeach
                     </ul>
                 </div>
             </div>
 
-            @foreach($sidebars as $sidebar)
-                {!! $sidebar !!}
+            @foreach($sidebars as $component)
+                @include('users-ui::component', ['component' => $component])
             @endforeach
 
         </div>

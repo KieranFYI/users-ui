@@ -14,7 +14,7 @@
     <div class="tab-content">
         @foreach($tabs as $tab)
             <div class="tab-pane @if($tab['active'])active @endif" id="{{ $tab['id'] }}">
-                {!! $tab['content'] !!}
+                @include('users-ui::component', ['component' => $tab])
             </div>
         @endforeach
     </div>

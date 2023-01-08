@@ -142,7 +142,7 @@ class UserController extends Controller
                     'id' => $id,
                     'active' => $activeTab === $id,
                     'name' => $tab->name(),
-                    'content' => $tab->content(),
+                    'tab' => $tab,
                 ]);
             }
         }
@@ -165,7 +165,7 @@ class UserController extends Controller
                 throw_unless($rawTab instanceof RegisterUserComponent, TypeError::class, self::class . '::handle(): ' . $event . ' return must be of type ' . RegisterUserTab::class);
 
                 /** @var RegisterUserComponent $tab */
-                $components->add($tab->content());
+                $components->add($tab);
             }
         }
 

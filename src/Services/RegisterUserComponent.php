@@ -8,18 +8,18 @@ class RegisterUserComponent
     /**
      * @var array|null
      */
-    private ?array $view = null;
+    public ?array $view = null;
 
     /**
      * @var string
      */
-    private string $html = '';
+    public string $html = '';
 
     /**
      * @param array $arguments
      * @return $this
      */
-    public function create(array ...$arguments): static
+    public static function create(...$arguments): static
     {
         return new static(...$arguments);
     }
@@ -46,23 +46,5 @@ class RegisterUserComponent
     {
         $this->html = $html;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function content(): string
-    {
-        $content = [];
-
-        if (!empty($this->view)) {
-            $content[] = view($this->view['template'], $this->view['arguments'])->render();
-        }
-
-        if (!empty($this->html)) {
-            $content[] = $this->html;
-        }
-
-        return implode(PHP_EOL . PHP_EOL, $content);
     }
 }
