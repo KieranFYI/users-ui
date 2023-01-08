@@ -80,7 +80,7 @@
                     </dd>
                 </dl>
                 <dl class="d-flex mb-0">
-                    <dt>Last Modified</dt>
+                    <dt>Last Updated</dt>
                     <dd class="text-right flex-grow-1 mb-0">
                         {{ formatDate(user.updated_at) }}
                     </dd>
