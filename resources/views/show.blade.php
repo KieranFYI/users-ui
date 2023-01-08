@@ -6,7 +6,7 @@
 
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile p-0">
-                    <div id="users-ui">
+                    <div id="vuejs-users-ui">
                         <user-details
                                 :user-data='@json($user)'
                                 :has-info="{{ $infos->isEmpty() ? 'true' : 'false' }}"

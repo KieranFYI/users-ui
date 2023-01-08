@@ -73,4 +73,4 @@ requireComponent.keys().forEach(fileName => {
     );
 });
 
-app.mount('#users-ui');
+app.mount('#vuejs-users-ui');
