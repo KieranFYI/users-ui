@@ -11,17 +11,16 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use KieranFYI\UserUI\Events\AbstractRegisterUserEvent;
 use KieranFYI\UserUI\Events\RegisterUserInfoEvent;
 use KieranFYI\UserUI\Events\RegisterUserSidebarEvent;
 use KieranFYI\UserUI\Events\RegisterUserTabEvent;
 use KieranFYI\UserUI\Http\Requests\StoreOrUpdateRequest;
-use KieranFYI\UserUI\Models\User;
 use KieranFYI\UserUI\Policies\UserPolicy;
 use KieranFYI\UserUI\Services\RegisterUserComponent;
 use KieranFYI\UserUI\Services\RegisterUserTab;
 use Throwable;
 use TypeError;
+use AppUser as User;
 
 class UserController extends Controller
 {
@@ -132,8 +131,9 @@ class UserController extends Controller
         $rawTabs = event(RegisterUserTabEvent::class, [$user]);
         $tabs = collect();
         foreach ($rawTabs as $rawTab) {
-            foreach ((array)$rawTab as $tab) {
-                throw_unless($rawTab instanceof RegisterUserTab, TypeError::class, self::class . '::handle(): ' . RegisterUserTabEvent::class . ' return must be of type ' . RegisterUserTab::class);
+            $rawTab = is_array($rawTab) ? $rawTab : [$rawTab];
+            foreach ($rawTab as $tab) {
+                throw_unless($tab instanceof RegisterUserTab, TypeError::class, self::class . '::handle(): ' . RegisterUserTabEvent::class . ' return must be of type ' . RegisterUserTab::class);
 
                 /** @var RegisterUserTab $tab */
                 $id = Str::slug($tab->name());
@@ -158,14 +158,15 @@ class UserController extends Controller
      */
     private function components(string $event, ...$arguments): Collection
     {
-        $rawTabs = event($event, $arguments);
+        $rawComponents = event($event, $arguments);
         $components = collect();
-        foreach ($rawTabs as $rawTab) {
-            foreach ((array)$rawTab as $tab) {
-                throw_unless($rawTab instanceof RegisterUserComponent, TypeError::class, self::class . '::handle(): ' . $event . ' return must be of type ' . RegisterUserTab::class);
+        foreach ($rawComponents as $rawComponent) {
+            $rawComponent = is_array($rawComponent) ? $rawComponent : [$rawComponent];
+            foreach ($rawComponent as $component) {
+                throw_unless($component instanceof RegisterUserComponent, TypeError::class, self::class . '::handle(): ' . $event . ' return must be of type ' . RegisterUserTab::class);
 
-                /** @var RegisterUserComponent $tab */
-                $components->add($tab);
+                /** @var RegisterUserComponent $component */
+                $components->add($component);
             }
         }
 

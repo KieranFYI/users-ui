@@ -29,7 +29,7 @@ class RegisterUserComponent
      * @param array $arguments
      * @return RegisterUserTab
      */
-    public function view(string $template, array ...$arguments): static
+    public function view(string $template, array $arguments): static
     {
         $this->view = [
             'template' => $template,

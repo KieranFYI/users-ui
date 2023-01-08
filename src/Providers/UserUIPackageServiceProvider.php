@@ -11,7 +11,6 @@ use KieranFYI\Roles\Core\Events\Register\RegisterRoleEvent;
 use KieranFYI\UserUI\Listeners\RegisterAdminNavigationListener;
 use KieranFYI\UserUI\Listeners\RegisterPermissionsListener;
 use KieranFYI\UserUI\Listeners\RegisterRolesListener;
-use KieranFYI\UserUI\Models\User;
 use KieranFYI\UserUI\Policies\UserPolicy;
 
 class UserUIPackageServiceProvider extends ServiceProvider
@@ -35,7 +34,6 @@ class UserUIPackageServiceProvider extends ServiceProvider
         $userClass = config('auth.providers.users.model');
 
         Gate::policy($userClass, UserPolicy::class);
-        Gate::policy(User::class, UserPolicy::class);
 
         Event::listen(RegisterPermissionEvent::class, RegisterPermissionsListener::class);
         Event::listen(RegisterRoleEvent::class, RegisterRolesListener::class);

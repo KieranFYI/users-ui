@@ -2,7 +2,7 @@
 
 namespace KieranFYI\UserUI\Events;
 
-use Illuminate\Foundation\Auth\User;
+use AppUser as User;
 
 class AbstractRegisterUserEvent
 {

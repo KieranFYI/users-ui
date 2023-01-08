@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row pt-3">
-        <div class="col-md-3">
+        <div class="col-lg-12 col-xl-3">
 
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile p-0">
@@ -29,20 +29,20 @@
 
         </div>
 
-        <div class="col-md-9">
-            <div class="card">
-                <div class="card-body text-center text-danger p-4">
-                    @if($tabs->isEmpty())
+        <div class="col-lg-12 col-xl-9">
+            @if($tabs->isEmpty())
+                <div class="card">
+                    <div class="card-body text-center text-danger p-4">
                         No content found.
-                    @else
-                        @include('users-ui::show-tabs')
-                    @endif
+                    </div>
                 </div>
-            </div>
+            @else
+                @include('users-ui::show-tabs')
+            @endif
         </div>
     </div>
 @endsection
 
-@section('js')
+@push('js')
     <script src="{{ mix('vue.js', 'vendor/kieranfyi/users-ui') }}"></script>
-@endsection
+@endpush
