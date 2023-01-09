@@ -16,7 +16,6 @@ use KieranFYI\UserUI\Events\RegisterUserSidebarEvent;
 use KieranFYI\UserUI\Events\RegisterUserTabEvent;
 use KieranFYI\UserUI\Http\Requests\StoreOrUpdateRequest;
 use KieranFYI\UserUI\Models\User;
-use KieranFYI\UserUI\Policies\UserPolicy;
 use KieranFYI\UserUI\Services\RegisterUserComponent;
 use KieranFYI\UserUI\Services\RegisterUserTab;
 use Throwable;
@@ -34,7 +33,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->authorizeResource(UserPolicy::class, 'user');
+        $this->authorizeResource(User::class, 'user');
     }
 
     /**
