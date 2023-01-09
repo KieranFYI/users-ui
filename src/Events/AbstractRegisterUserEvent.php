@@ -2,7 +2,7 @@
 
 namespace KieranFYI\UserUI\Events;
 
-use AppUser as User;
+use KieranFYI\UserUI\Models\User;
 
 class AbstractRegisterUserEvent
 {

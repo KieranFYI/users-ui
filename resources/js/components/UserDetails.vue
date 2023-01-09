@@ -66,8 +66,8 @@
                 <dl class="d-flex mb-0">
                     <dt>Email</dt>
                     <dd class="text-right flex-grow-1 mb-0">
-                        <span class="text-success mr-1" v-if="user.email_verified_at !== null">&check;</span>
-                        <span class="text-danger mr-1" v-else>&times;</span>
+                        <span class="text-success mr-1" v-if="user.email_verified_at !== null" title="Verified">&check;</span>
+                        <span class="text-danger mr-1" v-else title="Unverified">&times;</span>
                         <span class="user-select-all">
                         {{ user.email }}
                     </span>
@@ -182,6 +182,9 @@ export default {
                     $this.loading = false;
                 })
         }
+    },
+    created() {
+      this.update = this.$lodash.debounce(this.update, 300);
     },
     beforeMount() {
         this.user = this.userData;

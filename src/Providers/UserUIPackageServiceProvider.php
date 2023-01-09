@@ -32,13 +32,13 @@ class UserUIPackageServiceProvider extends ServiceProvider
         $this->loadRoutesFrom($root . '/routes/web.php');
 
         $userClass = config('auth.providers.users.model');
+        class_alias(config('auth.providers.users.model'), 'KieranFYI\\UserUI\\Models\\User');
 
+        Gate::policy('KieranFYI\\UserUI\\Models\\User', UserPolicy::class);
         Gate::policy($userClass, UserPolicy::class);
 
         Event::listen(RegisterPermissionEvent::class, RegisterPermissionsListener::class);
         Event::listen(RegisterRoleEvent::class, RegisterRolesListener::class);
         Event::listen(RegisterAdminNavigationEvent::class, RegisterAdminNavigationListener::class);
-
-        class_alias($userClass, 'AppUser');
     }
 }
