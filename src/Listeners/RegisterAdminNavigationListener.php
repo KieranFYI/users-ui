@@ -2,8 +2,8 @@
 
 namespace KieranFYI\UserUI\Listeners;
 
-use Illuminate\Support\Facades\Auth;
 use KieranFYI\Admin\Facades\Admin;
+use KieranFYI\UserUI\Models\User;
 
 class RegisterAdminNavigationListener
 {
@@ -12,11 +12,10 @@ class RegisterAdminNavigationListener
      */
     public function handle(): void
     {
-        if (Auth::check() && !Auth::user()->hasPermission('View Any User')) {
-            return;
-        }
-
-        Admin::menu('Users', 'admin')
+        Admin::header('admin')
+            ->menu('Users')
+            ->can('viewAny')
+            ->model(User::class)
             ->route('admin.users.index')
             ->icon('fas fa-users');
     }

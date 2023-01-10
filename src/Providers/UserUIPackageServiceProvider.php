@@ -34,8 +34,8 @@ class UserUIPackageServiceProvider extends ServiceProvider
         $userClass = config('auth.providers.users.model');
         Gate::policy($userClass, UserPolicy::class);
 
-        class_alias($userClass, 'KieranFYI\\UserUI\\Models\\User');
-        Gate::policy('KieranFYI\\UserUI\\Models\\User', UserPolicy::class);
+        class_alias($userClass, 'KieranFYI\UserUI\Models\User');
+        Gate::policy('KieranFYI\UserUI\Models\User', UserPolicy::class);
 
 
         Event::listen(RegisterPermissionEvent::class, RegisterPermissionsListener::class);
