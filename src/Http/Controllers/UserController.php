@@ -5,11 +5,11 @@ namespace KieranFYI\UserUI\Http\Controllers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use KieranFYI\UserUI\Events\RegisterUserInfoEvent;
 use KieranFYI\UserUI\Events\RegisterUserSidebarEvent;
@@ -43,9 +43,7 @@ class UserController extends Controller
      */
     public function index(): View
     {
-        return view('users-ui::index', [
-            'users' => User::paginate()
-        ]);
+        return view('users-ui::index');
     }
 
     /**
@@ -82,6 +80,15 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user): View|RedirectResponse
     {
+        $access = [];
+        foreach ($this->resourceAbilityMap() as $method => $policy) {
+            if (in_array($method, $this->resourceMethodsWithoutModels())) {
+                continue;
+            }
+            $access[$method] = Gate::any($policy, $user);
+        }
+        $user->setAttribute('access', $access);
+
         return view('users-ui::show', [
             'user' => $user,
             'tabs' => $this->tabs($user, $request->get('tab')),
@@ -90,34 +97,6 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param StoreOrUpdateRequest $request
-     * @param User $user
-     * @return JsonResponse
-     */
-    public function update(StoreOrUpdateRequest $request, User $user): JsonResponse
-    {
-        $validated = collect($request->validated())
-            ->filter()
-            ->toArray();
-        $user->update($validated);
-        return response()->json($user);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param User $user
-     * @return RedirectResponse
-     */
-    public function destroy(User $user): RedirectResponse
-    {
-        $user->delete();
-
-        return redirect()->route('admin.users.index');
-    }
 
     /**
      * @param User $user
@@ -179,5 +158,4 @@ class UserController extends Controller
 
         return $components;
     }
-
 }

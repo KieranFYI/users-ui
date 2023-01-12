@@ -8,12 +8,10 @@ class RegisterPermissionsListener
     /**
      * Handle the event.
      *
-     * @return array
+     * @return void
      */
-    public function handle(): array
+    public function handle(): void
     {
-        return [
-            UserPolicy::class
-        ];
+        UserPolicy::register();
     }
 }

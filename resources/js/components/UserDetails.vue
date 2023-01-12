@@ -5,13 +5,15 @@
             <h6 class="text-center">
                 Details
                 <span class="spinner-border spinner-border-sm float-right" role="status" v-if="loading"></span>
-                <template v-else-if="edit">
-                    <i class="fas fa-save float-right text-success" style="cursor: pointer" @click="update"></i>
-                    <i class="fas fa-times float-right text-danger mr-1" style="cursor: pointer"
-                       @click="edit = false"></i>
+                <template v-else-if="user.access.edit">
+                    <template v-if="edit">
+                        <i class="fas fa-save float-right text-success" style="cursor: pointer" @click="update"></i>
+                        <i class="fas fa-times float-right text-danger mr-1" style="cursor: pointer"
+                           @click="edit = false"></i>
+                    </template>
+                    <i class="fas fa-pencil-alt float-right text-primary" style="cursor: pointer" @click="toggle"
+                       v-else></i>
                 </template>
-                <i class="fas fa-pencil-alt float-right text-primary" style="cursor: pointer" @click="toggle"
-                   v-else></i>
             </h6>
 
             <div v-if="edit">
@@ -66,7 +68,8 @@
                 <dl class="d-flex mb-0">
                     <dt>Email</dt>
                     <dd class="text-right flex-grow-1 mb-0">
-                        <span class="text-success mr-1" v-if="user.email_verified_at !== null" title="Verified">&check;</span>
+                        <span class="text-success mr-1" v-if="user.email_verified_at !== null"
+                              title="Verified">&check;</span>
                         <span class="text-danger mr-1" v-else title="Unverified">&times;</span>
                         <span class="user-select-all">
                         {{ user.email }}
@@ -97,10 +100,6 @@ export default {
             required: true,
             type: Object
         },
-        endpoint: {
-            required: true,
-            type: String
-        },
         hasInfo: {
             required: true,
             type: Boolean
@@ -114,6 +113,9 @@ export default {
                 email_verified_at: null,
                 created_at: null,
                 updated_at: null,
+                access: {
+                    edit: false
+                },
             },
             loading: false,
             edit: false,
@@ -156,7 +158,7 @@ export default {
             $this.resetErrors();
 
             $this.$axios
-                .patch($this.endpoint, $this.values)
+                .patch(route('admin.api.users.update', {user: this.userData}), $this.values)
                 .then((response) => {
                     $this.user = response.data;
                     $this.edit = false;
@@ -184,7 +186,7 @@ export default {
         }
     },
     created() {
-      this.update = this.$lodash.debounce(this.update, 300);
+        this.update = this.$lodash.debounce(this.update, 300);
     },
     beforeMount() {
         this.user = this.userData;

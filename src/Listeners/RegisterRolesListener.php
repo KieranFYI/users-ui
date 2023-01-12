@@ -10,14 +10,13 @@ class RegisterRolesListener
     /**
      * Handle the event.
      *
-     * @return array
+     * @return void
      */
-    public function handle(): array
+    public function handle(): void
     {
-        return [
             RegisterRole::register('User Manager')
                 ->displayOrder(10)
-                ->permission(UserPolicy::class),
-        ];
+                ->permission(UserPolicy::class)
+            ->permission('View Any Role');
     }
 }

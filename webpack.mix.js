@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+const path = require("path");
 
 /*
  |--------------------------------------------------------------------------
@@ -15,10 +16,11 @@ mix
     .setPublicPath('public')
     /* JS */
     .js('resources/js/vue.js', 'vue.js')
+    .vue()
 
     /* Options */
     .options({
         processCssUrls: false
     })
-    .vue({ version: 3 })
+    .disableNotifications()
     .version();

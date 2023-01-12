@@ -23,6 +23,10 @@ class UserUIPackageServiceProvider extends ServiceProvider
     public function boot()
     {
         $root = __DIR__ . '/../..';
+        config([
+            'ziggy.groups.users' => ['admin.users.*'],
+            'ziggy.groups.users-api' => ['admin.api.users.*']
+        ]);
 
         $this->publishes([
             $root . '/public' => public_path('vendor/kieranfyi/users-ui'),

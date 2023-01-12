@@ -10,7 +10,6 @@
                         <user-details
                                 :user-data='@json($user)'
                                 :has-info="{{ $infos->isEmpty() ? 'true' : 'false' }}"
-                                endpoint="{{ route('admin.users.update', $user) }}"
                         />
                     </div>
                     <ul class="list-group list-group-unbordered mb-1">
@@ -43,6 +42,7 @@
     </div>
 @endsection
 
-@push('js')
+@pushOnce('js')
+    @routes('users-api')
     <script src="{{ mix('vue.js', 'vendor/kieranfyi/users-ui') }}"></script>
-@endpush
+@endpushOnce
