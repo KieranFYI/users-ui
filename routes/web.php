@@ -14,6 +14,11 @@ Admin::route()
         Route::prefix('api')
             ->name('api.')
             ->group(function () {
+                Route::get('users/{user}/logs', [UserAPIController::class, 'logs'])
+                    ->name('users.logs');
+                Route::post('users/{user}/logs', [UserAPIController::class, 'logs'])
+                    ->name('users.logs');
+
                 Route::resource('users', UserAPIController::class)
                     ->except('create', 'edit');
                 Route::post('users/search', [UserAPIController::class, 'search'])

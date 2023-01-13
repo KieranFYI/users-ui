@@ -16,6 +16,7 @@ mix
     .setPublicPath('public')
     /* JS */
     .js('resources/js/vue.js', 'vue.js')
+    .js('resources/js/vue-users-tabs-logging.js', 'vue-users-tabs-logging.js')
     .vue()
 
     /* Options */

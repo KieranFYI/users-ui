@@ -11,6 +11,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use KieranFYI\Misc\Traits\ResponseCacheable;
 use KieranFYI\UserUI\Events\RegisterUserInfoEvent;
 use KieranFYI\UserUI\Events\RegisterUserSidebarEvent;
 use KieranFYI\UserUI\Events\RegisterUserTabEvent;
@@ -25,6 +26,7 @@ class UserController extends Controller
 {
     use AuthorizesRequests;
     use ValidatesRequests;
+    use ResponseCacheable;
 
     /**
      * Create the controller instance.
@@ -43,6 +45,7 @@ class UserController extends Controller
      */
     public function index(): View
     {
+        $this->view();
         return view('users-ui::index');
     }
 
@@ -53,6 +56,7 @@ class UserController extends Controller
      */
     public function create(): View
     {
+        $this->view();
         return view('users-ui::create');
     }
 
@@ -80,15 +84,6 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user): View|RedirectResponse
     {
-        $access = [];
-        foreach ($this->resourceAbilityMap() as $method => $policy) {
-            if (in_array($method, $this->resourceMethodsWithoutModels())) {
-                continue;
-            }
-            $access[$method] = Gate::any($policy, $user);
-        }
-        $user->setAttribute('access', $access);
-
         return view('users-ui::show', [
             'user' => $user,
             'tabs' => $this->tabs($user, $request->get('tab')),

@@ -2,16 +2,16 @@
 
 namespace KieranFYI\UserUI\Http\Controllers;
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Carbon;
-use KieranFYI\Roles\Core\Traits\BuildsAccess;
+use KieranFYI\Logging\Http\Requests\LogSearchRequest;
+use KieranFYI\Logging\Traits\LoggableResponse;
+use KieranFYI\Misc\Exceptions\CacheableException;
+use KieranFYI\Misc\Traits\ResponseCacheable;
 use KieranFYI\UserUI\Http\Requests\SearchRequest;
 use KieranFYI\UserUI\Http\Requests\StoreOrUpdateRequest;
 use KieranFYI\UserUI\Models\User;
@@ -21,7 +21,8 @@ class UserAPIController extends Controller
 {
     use AuthorizesRequests;
     use ValidatesRequests;
-    use BuildsAccess;
+    use LoggableResponse;
+    use ResponseCacheable;
 
     /**
      * Create the controller instance.
@@ -37,16 +38,12 @@ class UserAPIController extends Controller
      * Display a listing of the resource.
      *
      * @return JsonResponse
+     * @throws CacheableException
      */
     public function index(): JsonResponse
     {
-        $users = User::get();
-        /** @var Carbon $updatedAt */
-        $users->transform(function (User $user) {
-            $this->buildAccess($user);
-            return $user;
-        });
-        return response()->json($users);
+        $this->setLastModified(User::paginate());
+        return response()->json();
     }
 
     /**
@@ -59,7 +56,6 @@ class UserAPIController extends Controller
     {
         $user = new User($request->validated());
         $user->save();
-        $this->buildAccess($user);
         return response()->json($user);
     }
 
@@ -73,7 +69,7 @@ class UserAPIController extends Controller
      */
     public function show(Request $request, User $user): JsonResponse
     {
-        $this->buildAccess($user);
+        $this->setLastModified($user->updated_at);
         return response()->json($user);
     }
 
@@ -87,7 +83,6 @@ class UserAPIController extends Controller
     public function update(StoreOrUpdateRequest $request, User $user): JsonResponse
     {
         $user->update(collect($request->validated())->filter()->toArray());
-        $this->buildAccess($user);
         return response()->json($user);
     }
 
@@ -124,16 +119,21 @@ class UserAPIController extends Controller
             });
         });
 
-        $paginator = $users->paginate();
-        $paginator->getCollection()->transform(function (User $user) {
-            $this->buildAccess($user);
-            return $user;
-        });
-
-        return response()->json($paginator);
+        return response()->json($users->paginate());
     }
 
     /**
+     * Display a listing of the resource logs.
+     *
+     * @param LogSearchRequest $request
+     * @return JsonResponse
+     */
+    public function logs(LogSearchRequest $request, User $user): JsonResponse
+    {
+        return $this->loggableResponse($request, $user);
+    }
+
+    /**\\
      * Get the map of resource methods to ability names.
      *
      * @return array
@@ -144,6 +144,7 @@ class UserAPIController extends Controller
             'index' => 'viewAny',
             'search' => 'viewAny',
             'show' => 'view',
+            'logs' => 'view',
             'create' => 'create',
             'store' => 'create',
             'edit' => 'update',
