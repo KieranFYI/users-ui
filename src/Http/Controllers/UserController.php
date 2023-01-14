@@ -42,10 +42,11 @@ class UserController extends Controller
      * Display a listing of the resource.
      *
      * @return View
+     * @throws Throwable
      */
     public function index(): View
     {
-        $this->view();
+        $this->cached();
         return view('users-ui::index');
     }
 
@@ -53,25 +54,12 @@ class UserController extends Controller
      * Show the form for creating a new resource.
      *
      * @return View
+     * @throws Throwable
      */
     public function create(): View
     {
-        $this->view();
+        $this->cached();
         return view('users-ui::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param StoreOrUpdateRequest $request
-     * @return RedirectResponse
-     */
-    public function store(StoreOrUpdateRequest $request): RedirectResponse
-    {
-        $user = new User($request->validated());
-        $user->save();
-
-        return redirect()->route('admin.users.show', $user);
     }
 
     /**
@@ -84,6 +72,7 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user): View|RedirectResponse
     {
+        $this->cached();
         return view('users-ui::show', [
             'user' => $user,
             'tabs' => $this->tabs($user, $request->get('tab')),

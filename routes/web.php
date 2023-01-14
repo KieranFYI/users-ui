@@ -9,7 +9,7 @@ Admin::route()
     ->group(function () {
 
         Route::resource('users', UserController::class)
-            ->only('index', 'create', 'store', 'show');
+            ->only('index', 'create', 'show');
 
         Route::prefix('api')
             ->name('api.')

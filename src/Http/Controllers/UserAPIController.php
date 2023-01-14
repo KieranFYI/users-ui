@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use KieranFYI\Logging\Http\Requests\LogSearchRequest;
 use KieranFYI\Logging\Traits\LoggableResponse;
-use KieranFYI\Misc\Exceptions\CacheableException;
 use KieranFYI\Misc\Traits\ResponseCacheable;
 use KieranFYI\UserUI\Http\Requests\SearchRequest;
 use KieranFYI\UserUI\Http\Requests\StoreOrUpdateRequest;
@@ -38,12 +37,13 @@ class UserAPIController extends Controller
      * Display a listing of the resource.
      *
      * @return JsonResponse
-     * @throws CacheableException
+     * @throws Throwable
      */
     public function index(): JsonResponse
     {
-        $this->setLastModified(User::paginate());
-        return response()->json();
+        $this->cached();
+        $users = User::paginate();
+        return response()->json($users);
     }
 
     /**
@@ -69,7 +69,7 @@ class UserAPIController extends Controller
      */
     public function show(Request $request, User $user): JsonResponse
     {
-        $this->setLastModified($user->updated_at);
+        $this->cached();
         return response()->json($user);
     }
 
@@ -103,9 +103,11 @@ class UserAPIController extends Controller
      *
      * @param SearchRequest $request
      * @return JsonResponse
+     * @throws Throwable
      */
     public function search(SearchRequest $request): JsonResponse
     {
+        $this->cached();
         /** @var Builder $users */
         $users = User::query();
 
@@ -126,7 +128,9 @@ class UserAPIController extends Controller
      * Display a listing of the resource logs.
      *
      * @param LogSearchRequest $request
+     * @param User $user
      * @return JsonResponse
+     * @throws Throwable
      */
     public function logs(LogSearchRequest $request, User $user): JsonResponse
     {
