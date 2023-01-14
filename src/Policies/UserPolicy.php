@@ -17,7 +17,7 @@ class UserPolicy extends AbstractPolicy
      */
     public function update(mixed $user, Model $model): bool
     {
-        return $this->hasPermission($user, 'Update') && (Auth::check() && !$model->is($user));
+        return $this->hasPermission($user, 'Update');
     }
 
     /**
