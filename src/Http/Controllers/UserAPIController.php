@@ -42,8 +42,7 @@ class UserAPIController extends Controller
     public function index(): JsonResponse
     {
         $this->cached();
-        $users = User::paginate();
-        return response()->json($users);
+        return response()->json(User::paginate());
     }
 
     /**
@@ -137,7 +136,7 @@ class UserAPIController extends Controller
         return $this->loggableResponse($request, $user);
     }
 
-    /**\\
+    /**
      * Get the map of resource methods to ability names.
      *
      * @return array

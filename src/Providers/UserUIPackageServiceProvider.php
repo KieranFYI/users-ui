@@ -43,7 +43,6 @@ class UserUIPackageServiceProvider extends ServiceProvider
         class_alias($userClass, 'KieranFYI\UserUI\Models\User');
         Gate::policy('KieranFYI\UserUI\Models\User', UserPolicy::class);
 
-
         Event::listen(RegisterPermissionEvent::class, RegisterPermissionsListener::class);
         Event::listen(RegisterRoleEvent::class, RegisterRolesListener::class);
         Event::listen(RegisterAdminNavigationEvent::class, RegisterAdminNavigationListener::class);
